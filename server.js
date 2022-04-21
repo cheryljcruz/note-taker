@@ -1,14 +1,30 @@
 const PORT = process.env.PORT || 3001;
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 const express = require("express");
 const app = express();
 
-const notes = require('./develop/db/db.json')
+const notes = require("./db/db.json");
 
-app.get('/api/notes', (req,res) => {
-    res.json(notes);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+
+// function to create notes
+// function to delete notes
+
+
+app.get("/api/notes", (req, res) => {
+  res.json(notes);
+});
+
+// get html files
+
+
+app.post('/api/notes', (req, res) => {
+    console.log(req.body);
+    res.json(req.body);
 });
 
 app.listen(PORT, () => {
