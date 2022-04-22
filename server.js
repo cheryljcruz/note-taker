@@ -5,18 +5,18 @@ const path = require("path");
 const express = require("express");
 const app = express();
 
-const notes = require("./db/db.json");
+const totalNotes = require("./db/db.json");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// function to create notes
+// deployed heroku:  https://young-beyond-04987.herokuapp.com/
 // function to delete notes
 
-
+// get notes
 app.get("/api/notes", (req, res) => {
-  res.json(notes);
+  res.json(totalNotes);
 });
 
 // get html files
@@ -32,9 +32,29 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
+// function to create notes
+function createNote(body, noteArr) {
+    const newNote = body;
+     if (!Array.isArray(noteArr))
+     noteArr = [];
+
+     if (noteArr.length === 0)
+     noteArr.push(0);
+
+     body.id = noteArr[0];
+     noteArr[0]++;
+
+    noteArr.push(newNote);
+    fs.writeFileSync(
+        path.join(__dirname, './db/db.json'),
+        JSON.stringify(noteArr, null, 2)
+    );
+   return newNote;
+}
+
 app.post('/api/notes', (req, res) => {
-    console.log(req.body);
-    res.json(req.body);
+    const newNote = createNote(req.body, totalNotes);
+    res.json(newNote);
 });
 
 app.listen(PORT, () => {
